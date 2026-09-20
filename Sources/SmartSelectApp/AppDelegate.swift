@@ -14,8 +14,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let trusted = AccessibilityBridge.ensureTrusted(promptIfNeeded: true)
         Log.d("launched. accessibility trusted=\(trusted)")
 
-        let tap = EventTapController { [weak self] in
-            self?.handleDoubleClick()
+        let tap = EventTapController { [weak self] point in
+            self?.handleDoubleClick(at: point)
         }
         eventTap = tap
 
@@ -30,9 +30,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func handleDoubleClick() {
+    private func handleDoubleClick(at point: CGPoint) {
         guard Preferences.shared.isEnabled else { return }
-        selection.expandCurrentSelection(using: Preferences.shared.enabledKinds)
+        selection.expandCurrentSelection(using: Preferences.shared.enabledKinds, at: point)
     }
 }
 

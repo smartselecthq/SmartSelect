@@ -7,14 +7,14 @@ import CoreGraphics
 final class EventTapController {
     private var tap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
-    private let onDoubleClick: () -> Void
+    private let onDoubleClick: (CGPoint) -> Void
     private(set) var isRunning = false
 
     /// Delay before reading the selection, to let the target app perform its own
     /// word-selection in response to the double-click first.
     private let settleDelay: TimeInterval = 0.04
 
-    init(onDoubleClick: @escaping () -> Void) {
+    init(onDoubleClick: @escaping (CGPoint) -> Void) {
         self.onDoubleClick = onDoubleClick
     }
 
@@ -25,9 +25,10 @@ final class EventTapController {
             guard let refcon else { return Unmanaged.passUnretained(event) }
             let controller = Unmanaged<EventTapController>.fromOpaque(refcon).takeUnretainedValue()
             if type == .leftMouseDown, event.getIntegerValueField(.mouseEventClickState) == 2 {
-                Log.d("double-click detected")
+                let location = event.location
+                Log.d("double-click detected at \(location)")
                 DispatchQueue.main.asyncAfter(deadline: .now() + controller.settleDelay) {
-                    controller.onDoubleClick()
+                    controller.onDoubleClick(location)
                 }
             } else if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
                 controller.reEnable()
