@@ -1,0 +1,49 @@
+name: Release
+
+# Cut a release by pushing a tag, e.g.:
+#   git tag v0.1.0 && git push origin v0.1.0
+#
+# Note: the produced app is NOT code-signed or notarized (that needs an Apple
+# Developer account). Users will see a Gatekeeper prompt on first launch until
+# signing/notarization is wired up. The release notes call this out.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, package & publish
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+      - name: Build & package app
+        run: make app
+
+      - name: Zip app bundle
+        working-directory: build
+        run: |
+          ditto -c -k --keepParent SmartSelect.app SmartSelect.zip
+          shasum -a 256 SmartSelect.zip | tee SmartSelect.zip.sha256
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          SHA=$(cut -d ' ' -f1 build/SmartSelect.zip.sha256)
+          gh release create "${GITHUB_REF_NAME}" \
+            build/SmartSelect.zip \
+            build/SmartSelect.zip.sha256 \
+            --title "SmartSelect ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --notes-start-tag "$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo '')" \
+            --notes "**Homebrew cask sha256:** \`${SHA}\`
+
+            > ⚠︎ This build is not yet signed or notarized. On first launch, right-click the app → Open, or allow it under System Settings → Privacy & Security."
