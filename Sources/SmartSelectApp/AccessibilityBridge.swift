@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import ApplicationServices
 import SmartSelectCore
@@ -55,3 +56,5 @@ enum AccessibilityBridge {
         return AXUIElementSetAttributeValue(element, kAXSelectedTextRangeAttribute as CFString, axValue) == .success
     }
 }
+
+#endif

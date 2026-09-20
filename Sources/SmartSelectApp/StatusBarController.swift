@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import SmartSelectCore
 
@@ -89,3 +90,5 @@ final class StatusBarController: NSObject {
         onQuit()
     }
 }
+
+#endif

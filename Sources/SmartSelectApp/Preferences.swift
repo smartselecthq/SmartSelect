@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 import SmartSelectCore
 
@@ -43,3 +44,5 @@ final class Preferences {
         return Set(raw.compactMap(EntityKind.init(rawValue:)))
     }
 }
+
+#endif
