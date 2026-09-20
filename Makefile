@@ -3,7 +3,7 @@ APP_NAME := SmartSelect
 BUILD_DIR := build
 CONFIG := release
 
-.PHONY: help build release test app clean lint format run
+.PHONY: help build release test app app-clt clean lint format run
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -18,8 +18,11 @@ release: ## Release build of the executable
 test: ## Run the SmartSelectCore test suite
 	swift test
 
-app: release ## Bundle a runnable SmartSelect.app into ./build
+app: release ## Bundle a runnable SmartSelect.app into ./build (needs full Xcode)
 	@bash scripts/package-app.sh $(CONFIG)
+
+app-clt: ## Bundle SmartSelect.app using only Command Line Tools (no Xcode)
+	@bash scripts/build-clt.sh
 
 run: app ## Build the app bundle and launch it
 	open $(BUILD_DIR)/$(APP_NAME).app
