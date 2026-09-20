@@ -1,0 +1,43 @@
+name: Bug report
+description: A selection expanded wrong, didn't expand, or the app misbehaved
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report! A concrete before/after helps enormously.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you double-click, and what got selected?
+      placeholder: |
+        Text: "ping jane.doe@acme.co"
+        Double-clicked on: "jane"
+        Selected: "jane"  (expected the whole email)
+    validations:
+      required: true
+  - type: input
+    id: entity-kind
+    attributes:
+      label: Entity kind
+      description: Which kind was involved (email, number, url, date, ipAddress, filePath, hexColor, handle)?
+  - type: input
+    id: app
+    attributes:
+      label: Which app were you in?
+      placeholder: e.g. Safari, Notes, VS Code, Mail
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: e.g. 14.5
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: SmartSelect version
+      placeholder: e.g. 0.1.0 (see the menu-bar About / git tag)

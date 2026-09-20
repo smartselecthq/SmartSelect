@@ -1,0 +1,24 @@
+name: Feature request
+description: A new entity kind to snap to, or another improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should SmartSelect do?
+      description: If it's a new entity kind, give a few real examples of the text.
+      placeholder: |
+        Snap to phone numbers, e.g. "+1 (415) 555-0132" and "415-555-0132".
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is the current behavior a papercut?
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd be willing to open a PR for this (see CONTRIBUTING.md)
