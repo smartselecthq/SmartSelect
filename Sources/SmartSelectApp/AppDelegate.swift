@@ -10,7 +10,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Prompt for Accessibility access on first launch; it is required for both the
         // event tap and reading/writing the focused element's selection.
-        AccessibilityBridge.ensureTrusted(promptIfNeeded: true)
+        Log.reset()
+        let trusted = AccessibilityBridge.ensureTrusted(promptIfNeeded: true)
+        Log.d("launched. accessibility trusted=\(trusted)")
 
         let tap = EventTapController { [weak self] in
             self?.handleDoubleClick()

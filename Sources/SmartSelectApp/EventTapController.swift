@@ -25,6 +25,7 @@ final class EventTapController {
             guard let refcon else { return Unmanaged.passUnretained(event) }
             let controller = Unmanaged<EventTapController>.fromOpaque(refcon).takeUnretainedValue()
             if type == .leftMouseDown, event.getIntegerValueField(.mouseEventClickState) == 2 {
+                Log.d("double-click detected")
                 DispatchQueue.main.asyncAfter(deadline: .now() + controller.settleDelay) {
                     controller.onDoubleClick()
                 }
@@ -54,6 +55,7 @@ final class EventTapController {
         self.tap = tap
         self.runLoopSource = source
         isRunning = true
+        Log.d("event tap created and enabled")
     }
 
     func stop() {

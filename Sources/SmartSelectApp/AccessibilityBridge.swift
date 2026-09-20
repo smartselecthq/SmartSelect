@@ -29,23 +29,44 @@ enum AccessibilityBridge {
         let system = AXUIElementCreateSystemWide()
 
         var focusedRef: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(system, kAXFocusedUIElementAttribute as CFString, &focusedRef) == .success,
-              let focused = focusedRef else { return nil }
+        let focusStatus = AXUIElementCopyAttributeValue(system, kAXFocusedUIElementAttribute as CFString, &focusedRef)
+        guard focusStatus == .success, let focused = focusedRef else {
+            Log.d("no focused element (AXError \(focusStatus.rawValue))")
+            return nil
+        }
         // AXUIElement is a CFType bridged to CFTypeRef; this cast is the documented idiom.
         let element = focused as! AXUIElement
+        Log.d("focused role=\(copyStringAttribute(element, kAXRoleAttribute) ?? "?") " +
+              "subrole=\(copyStringAttribute(element, kAXSubroleAttribute) ?? "-")")
 
         var valueRef: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(element, kAXValueAttribute as CFString, &valueRef) == .success,
-              let value = valueRef as? String else { return nil }
+        let valueStatus = AXUIElementCopyAttributeValue(element, kAXValueAttribute as CFString, &valueRef)
+        guard valueStatus == .success, let value = valueRef as? String else {
+            Log.d("no kAXValue string (AXError \(valueStatus.rawValue)) — app likely does not expose its text via Accessibility")
+            return nil
+        }
 
         var rangeRef: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(element, kAXSelectedTextRangeAttribute as CFString, &rangeRef) == .success,
-              let rangeValue = rangeRef else { return nil }
+        let rangeStatus = AXUIElementCopyAttributeValue(element, kAXSelectedTextRangeAttribute as CFString, &rangeRef)
+        guard rangeStatus == .success, let rangeValue = rangeRef else {
+            Log.d("no kAXSelectedTextRange (AXError \(rangeStatus.rawValue))")
+            return nil
+        }
         var cfRange = CFRange()
-        guard AXValueGetValue(rangeValue as! AXValue, .cfRange, &cfRange) else { return nil }
+        guard AXValueGetValue(rangeValue as! AXValue, .cfRange, &cfRange) else {
+            Log.d("kAXSelectedTextRange is not a CFRange")
+            return nil
+        }
 
         let span = TextSpan(location: cfRange.location, length: cfRange.length)
+        Log.d("read value.len=\((value as NSString).length) selection=(\(span.location),\(span.length))")
         return FocusedText(element: element, value: value, selection: span)
+    }
+
+    private static func copyStringAttribute(_ element: AXUIElement, _ attribute: String) -> String? {
+        var ref: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, attribute as CFString, &ref) == .success else { return nil }
+        return ref as? String
     }
 
     /// Applies a new selected range to the given element.
