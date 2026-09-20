@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import SmartSelectCore
 
@@ -32,3 +33,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         selection.expandCurrentSelection(using: Preferences.shared.enabledKinds)
     }
 }
+
+#endif

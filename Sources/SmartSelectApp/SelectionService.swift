@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 import SmartSelectCore
 
@@ -18,3 +19,5 @@ final class SelectionService {
         AccessibilityBridge.setSelection(result.span, on: focused.element)
     }
 }
+
+#endif

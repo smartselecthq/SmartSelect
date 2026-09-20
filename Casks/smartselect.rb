@@ -1,11 +1,12 @@
 # Homebrew Cask for SmartSelect.
 #
-# This is a template. To publish it, cut a GitHub Release that attaches
-# SmartSelect.zip, then fill in `version` and `sha256` (shasum -a 256 SmartSelect.zip),
-# and submit the cask to a tap (e.g. homebrew/cask or your own tap).
+# Wired to the v0.1.0 GitHub Release. On each new release the Release workflow
+# prints the new `sha256` (also attached as SmartSelect.zip.sha256) — bump
+# `version` and `sha256` here to match, then submit to a tap (your own, or
+# homebrew/cask) so `brew install --cask smartselect` resolves.
 cask "smartselect" do
   version "0.1.0"
-  sha256 :no_check # replace with the real checksum once a release exists
+  sha256 "ee5ffbd5b4c6d4c0a691c474d71464fbdfb252469ae9a5e768ab0055a2495d7c"
 
   url "https://github.com/smartselecthq/SmartSelect/releases/download/v#{version}/SmartSelect.zip"
   name "SmartSelect"

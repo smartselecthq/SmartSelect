@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import CoreGraphics
 
@@ -70,3 +71,5 @@ final class EventTapController {
         CGEvent.tapEnable(tap: tap, enable: true)
     }
 }
+
+#endif

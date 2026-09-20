@@ -20,7 +20,12 @@ public protocol EntityDetector: Sendable {
 /// `NSRegularExpression` (rather than Swift's `Regex`) is used intentionally: it operates
 /// in UTF-16 space to match ``TextSpan`` and the Accessibility API, and it compiles and
 /// runs identically on macOS and on Linux CI.
-public struct RegexEntityDetector: EntityDetector {
+///
+/// - Note: `@unchecked Sendable` is required because Linux's swift-corelibs-foundation
+///   does not mark `NSRegularExpression` as `Sendable` (Apple's Foundation does). The type
+///   is documented as thread-safe once compiled, and this detector only ever reads from it,
+///   so the unchecked conformance is sound.
+public struct RegexEntityDetector: EntityDetector, @unchecked Sendable {
     public let kind: EntityKind
     private let regex: NSRegularExpression
 
